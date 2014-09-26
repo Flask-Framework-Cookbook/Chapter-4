@@ -1,6 +1,6 @@
 from functools import wraps
 from flask import request, Blueprint, render_template, jsonify
-from my_app import db
+from my_app import db, app
 from my_app.catalog.models import Product, Category
 
 catalog = Blueprint('catalog', __name__)
@@ -22,6 +22,11 @@ def template_or_json(template=None):
                 return render_template(template, **ctx)
         return decorated_fn
     return decorated
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 
 @catalog.route('/')
