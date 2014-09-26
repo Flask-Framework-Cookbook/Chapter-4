@@ -1,4 +1,4 @@
-from flask import request, Blueprint, render_template
+from flask import request, Blueprint, render_template, jsonify
 from my_app import db
 from my_app.catalog.models import Product, Category
 
@@ -7,6 +7,11 @@ catalog = Blueprint('catalog', __name__)
 @catalog.route('/')
 @catalog.route('/home')
 def home():
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        products = Product.query.all()
+        return jsonify({
+            'count': len(products)
+        })
     return render_template('home.html')
 
 
