@@ -17,6 +17,15 @@
       </div>
     </div>
     <div class="container">
+    <br/>
+    <div>
+      {% for category, message in get_flashed_messages(with_categories=true) %}
+        <div class="alert alert-{{category}} alert-dismissable">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+          {{ message }}
+        </div>
+      {% endfor %}
+      </div>
     {% block container %}{% endblock %}
     </div>
 
