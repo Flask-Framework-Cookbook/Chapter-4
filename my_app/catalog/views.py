@@ -3,6 +3,7 @@ from flask import request, Blueprint, render_template, jsonify, flash, \
     redirect, url_for
 from my_app import db, app
 from my_app.catalog.models import Product, Category
+from sqlalchemy.orm.util import join
 
 catalog = Blueprint('catalog', __name__)
 
@@ -66,6 +67,29 @@ def create_product():
         flash('The product %s has been created' % name, 'success')
         return redirect(url_for('catalog.product', id=product.id))
     return render_template('product-create.html')
+
+
+@catalog.route('/product-search')
+@catalog.route('/product-search/<int:page>')
+def product_search(page=1):
+    name = request.args.get('name')
+    price = request.args.get('price')
+    company = request.args.get('company')
+    category = request.args.get('category')
+    products = Product.query
+    if name:
+        products = products.filter(Product.name.like('%' + name + '%'))
+    if price:
+        products = products.filter(Product.price == price)
+    if company:
+        products = products.filter(Product.company.like('%' + company + '%'))
+    if category:
+        products = products.select_from(join(Product, Category)).filter(
+            Category.name.like('%' + category + '%')
+        )
+    return render_template(
+        'products.html', products=products.paginate(page, 10)
+    )
 
 
 @catalog.route('/category-create', methods=['POST',])
