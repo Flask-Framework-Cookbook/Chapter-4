@@ -11,14 +11,14 @@
       </div>
     {% endfor %}
     {% if products.has_prev %}
-      <a href="{{ url_for('catalog.products', page=products.prev_num) }}">
+      <a href="{{ url_for(request.endpoint, page=products.prev_num) }}">
         {{"<< Previous Page"}}
       </a>
     {% else %}
       {{"<< Previous Page"}}
     {% endif %} |
     {% if products.has_next %}
-      <a href="{{ url_for('catalog.products', page=products.next_num) }}">
+      <a href="{{ url_for(request.endpoint, page=products.next_num) }}">
         {{"Next page >>"}}
       </a>
     {% else %}
